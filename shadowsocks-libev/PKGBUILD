@@ -1,0 +1,35 @@
+# Modified: Infong Lou <infong.lou@gmail.com>
+# Maintainer: Felix Yan <felixonmars@gmail.com>
+# Contributor: 4679kun <admin at 4679 dot us>
+
+pkgname=shadowsocks-libev
+pkgver=1.4.5
+pkgrel=1
+pkgdesc='A lightweight secured scoks5 proxy for embedded devices and low end boxes'
+arch=('i686' 'x86_64')
+url='https://github.com/madeye/shadowsocks-libev'
+license=('GPL3')
+depends=('openssl')
+makedepends=('git')
+source=("git://github.com/madeye/shadowsocks-libev.git#tag=v$pkgver"
+        'shadowsocks-libev@.service'
+        'shadowsocks-libev-server@.service')
+
+build() {
+  cd $pkgname
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd $pkgname
+  make DESTDIR="$pkgdir/" install
+
+  install -Dm644 "$srcdir/shadowsocks-libev@.service" "$pkgdir/usr/lib/systemd/system/shadowsocks-libev@.service"
+  install -Dm644 "$srcdir/shadowsocks-libev-server@.service" "$pkgdir/usr/lib/systemd/system/shadowsocks-libev-server@.service"
+}
+
+md5sums=('SKIP'
+         'a6b4c75d1baa715c477666d0f4d796c9'
+         '124866b06e6b1118f704908ef4b3ac47')
